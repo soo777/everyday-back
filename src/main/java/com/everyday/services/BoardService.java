@@ -16,4 +16,8 @@ public class BoardService {
     public List<BoardList> getBoardList() {
         return boardListRepository.findAll();
     }
+
+    public BoardList getBoardList1() {
+        return boardListRepository.findById(1);
+    }
 }

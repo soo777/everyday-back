@@ -9,7 +9,5 @@ import javax.transaction.Transactional;
 @Repository
 @Transactional
 public interface BoardListRepository extends JpaRepository<BoardList, Integer> {
-
     BoardList findById(int id);
-
 }
