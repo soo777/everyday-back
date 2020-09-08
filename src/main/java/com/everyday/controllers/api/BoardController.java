@@ -27,4 +27,14 @@ public class BoardController extends AbstractController {
         rsp = new APIResponse(true, "success", boardList);
         return ResponseEntity.ok(rsp);
     }
+
+    @GetMapping("/board")
+    public ResponseEntity<APIResponse> board() {
+        APIResponse rsp = null;
+
+        List<BoardList> boardList = boardService.getBoardList();
+
+        rsp = new APIResponse(true, "success", boardList);
+        return ResponseEntity.ok(rsp);
+    }
 }
