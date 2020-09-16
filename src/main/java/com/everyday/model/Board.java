@@ -11,8 +11,8 @@ import java.io.Serializable;
 @ToString
 @Getter
 @Entity
-@Table(name = "tb_board_list")
-public class BoardList implements Serializable {
+@Table(name = "tb_board")
+public class Board implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(insertable = false, updatable = false)
