@@ -4,6 +4,8 @@ import com.everyday.controller.AbstractController;
 import com.everyday.messages.APIResponse;
 import com.everyday.model.Board;
 import com.everyday.services.BoardService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,10 @@ import java.util.List;
 
 @RestController
 public class BoardController extends AbstractController {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+//    private static final Logger logger = LoggerFactory.getLogger(BoardController.class);
+
     @Autowired
     private BoardService boardService;
 
@@ -42,12 +48,12 @@ public class BoardController extends AbstractController {
     public ResponseEntity<APIResponse> addBoardList(@RequestBody Board boardParam) {
         APIResponse rsp = null;
 
-//        log.debug("@@@ param - {}", boardParam);
+        logger.debug("@@@ param - {}", boardParam);
 
         Board board = new Board();
         board.setBoardName(boardParam.getBoardName());
 
-        boardService.addBoard(board);
+//        boardService.addBoard(board);
 
         rsp = new APIResponse(true, "add Board success", board);
         return ResponseEntity.ok(rsp);
