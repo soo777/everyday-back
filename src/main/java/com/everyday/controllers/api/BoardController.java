@@ -53,7 +53,7 @@ public class BoardController extends AbstractController {
         Board board = new Board();
         board.setBoardName(boardParam.getBoardName());
 
-//        boardService.addBoard(board);
+        boardService.addBoard(board);
 
         rsp = new APIResponse(true, "add Board success", board);
         return ResponseEntity.ok(rsp);
