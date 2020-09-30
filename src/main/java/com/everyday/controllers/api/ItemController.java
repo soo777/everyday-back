@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -39,9 +41,16 @@ public class ItemController extends AbstractController {
 
         logger.debug("@@@ param - {}", itemParam);
 
-        Item item = new Item();
-        item.setContent(itemParam.getContent());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String nowDate = format.format(date);
 
+        Item item = new Item();
+        item.setBoardId(2);
+        item.setContent(itemParam.getContent());
+        item.setCreator("soo");
+        item.setCreateDate(nowDate);
+        item.setUpdateDate(nowDate);
         itemService.addItem(item);
 
         rsp = new APIResponse(true, "add Board success", item);

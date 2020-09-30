@@ -19,13 +19,13 @@ public class Item implements Serializable {
     private int itemId;
 
     @Column(name = "board_id")
-    private String boardId;
+    private int boardId;
 
     @Column
     private String content;
 
     @Column
-    private String star;
+    private int star;
 
     @Column
     private String creator;
