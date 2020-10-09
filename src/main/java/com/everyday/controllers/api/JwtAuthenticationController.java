@@ -1,9 +1,12 @@
 package com.everyday.controllers.api;
 
 import com.everyday.config.JwtTokenUtil;
+import com.everyday.messages.APIResponse;
 import com.everyday.model.JwtRequest;
 import com.everyday.model.JwtResponse;
 import com.everyday.services.JwtUserDetailsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,15 +32,20 @@ public class JwtAuthenticationController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+    public ResponseEntity<APIResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+
+        APIResponse rsp = null;
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
         final String token = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        rsp = new APIResponse(true, "success", token);
+        return ResponseEntity.ok(rsp);
     }
 
     private void authenticate(String username, String password) throws Exception {
