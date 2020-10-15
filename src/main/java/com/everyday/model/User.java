@@ -23,6 +23,8 @@ public class User implements Serializable {
 
     private String password;
 
+    private String name;
+
     @Column(name = "create_date")
     private String createDate;
 }

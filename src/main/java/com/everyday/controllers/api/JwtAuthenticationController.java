@@ -4,7 +4,10 @@ import com.everyday.config.JwtTokenUtil;
 import com.everyday.messages.APIResponse;
 import com.everyday.model.JwtRequest;
 import com.everyday.model.JwtResponse;
+import com.everyday.model.User;
 import com.everyday.services.JwtUserDetailsService;
+import com.everyday.services.UserService;
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +17,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @RestController
 @CrossOrigin
@@ -32,6 +35,9 @@ public class JwtAuthenticationController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
+    @Autowired
+    private UserService userService;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @PostMapping(value = "/authenticate")
@@ -45,6 +51,35 @@ public class JwtAuthenticationController {
         final String token = jwtTokenUtil.generateToken(userDetails);
 
         rsp = new APIResponse(true, "success", token);
+        return ResponseEntity.ok(rsp);
+    }
+
+    @PostMapping("/signIn")
+    public ResponseEntity<APIResponse> signIn(@RequestBody User userParam) {
+        APIResponse rsp = null;
+
+        // userId check
+        User userCheck = userService.getUser(userParam.getUserId());
+        if(userCheck != null) {
+            rsp = new APIResponse(false, "signIn fail", "userId is already existed");
+            return ResponseEntity.ok(rsp);
+        }
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String nowDate = format.format(date);
+
+        String encryptedPassword = BCrypt.hashpw(userParam.getPassword(), BCrypt.gensalt());
+
+        User user = new User();
+        user.setUserId(userParam.getUserId());
+        user.setPassword(encryptedPassword);
+        user.setCreateDate(nowDate);
+        user.setName(userParam.getName());
+
+        userService.saveUser(user);
+
+        rsp = new APIResponse(true, "signIn success", null);
         return ResponseEntity.ok(rsp);
     }
 
