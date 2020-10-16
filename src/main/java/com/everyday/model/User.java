@@ -11,20 +11,18 @@ import java.io.Serializable;
 @ToString
 @Getter
 @Entity
-@Table(name = "tb_user")
+@Table(name = "user")
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_key", insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false)
     private int userKey;
 
-    @Column(name = "user_id")
     private String userId;
 
     private String password;
 
     private String name;
 
-    @Column(name = "create_date")
     private String createDate;
 }

@@ -11,28 +11,23 @@ import java.io.Serializable;
 @ToString
 @Getter
 @Entity
-@Table(name = "tb_item")
+@Table(name = "item")
 public class Item implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id", insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false)
     private int itemId;
 
-    @Column(name = "board_id")
     private int boardId;
 
-    @Column
     private String content;
 
-    @Column
     private int star;
 
-    @Column
     private String creator;
 
-    @Column(name = "create_date")
+    @Column
     private String createDate;
 
-    @Column(name = "update_date")
     private String updateDate;
 }

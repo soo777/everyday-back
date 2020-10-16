@@ -11,13 +11,12 @@ import java.io.Serializable;
 @ToString
 @Getter
 @Entity
-@Table(name = "tb_board")
+@Table(name = "board")
 public class Board implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(insertable = false, updatable = false)
     private int id;
 
-    @Column(name = "board_name")
     private String boardName;
 }
