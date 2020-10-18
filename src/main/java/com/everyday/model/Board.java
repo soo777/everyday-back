@@ -16,7 +16,7 @@ public class Board implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(insertable = false, updatable = false)
-    private int id;
+    private int boardKey;
 
     private String boardName;
 }

@@ -12,8 +12,8 @@ public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
-    public List<Item> getItemList() {
-        return itemRepository.findAll();
+    public List<Item> getItemList(Integer boardKey) {
+        return itemRepository.findAllByBoardKey(boardKey);
     }
 
     public void addItem(Item item) {

@@ -16,9 +16,9 @@ public class Item implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(insertable = false, updatable = false)
-    private int itemId;
+    private int itemKey;
 
-    private int boardId;
+    private int boardKey;
 
     private String content;
 
