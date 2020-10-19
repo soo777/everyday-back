@@ -20,6 +20,10 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+    public void deleteItem(Integer itemKey) {
+        itemRepository.deleteByItemKey(itemKey);
+    }
+
     public Item getItem() {
         return itemRepository.findById(1);
     }

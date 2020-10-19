@@ -54,4 +54,20 @@ public class ItemController extends AbstractController {
         rsp = new APIResponse(true, "add Board success", item);
         return ResponseEntity.ok(rsp);
     }
+
+    @DeleteMapping("/item")
+    public ResponseEntity<APIResponse> deleteItem(@RequestParam int itemKey) {
+        APIResponse rsp = null;
+
+        logger.debug("@@@ param - {}", itemKey);
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String nowDate = format.format(date);
+
+        itemService.deleteItem(itemKey);
+
+        rsp = new APIResponse(true, "delete Board success", null);
+        return ResponseEntity.ok(rsp);
+    }
 }
