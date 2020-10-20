@@ -13,7 +13,7 @@ public class ItemService {
     private ItemRepository itemRepository;
 
     public List<Item> getItemList(Integer boardKey) {
-        return itemRepository.findAllByBoardKey(boardKey);
+        return itemRepository.findAllByBoardKeyAndStatus(boardKey, true);
     }
 
     public void addItem(Item item) {
@@ -24,7 +24,11 @@ public class ItemService {
         itemRepository.deleteByItemKey(itemKey);
     }
 
-    public Item getItem() {
-        return itemRepository.findById(1);
+    public void updateItem(Item item) {
+        itemRepository.save(item);
+    }
+
+    public Item getItem(int itemKey) {
+        return itemRepository.findById(itemKey);
     }
 }

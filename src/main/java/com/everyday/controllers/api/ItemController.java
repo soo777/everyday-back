@@ -49,6 +49,7 @@ public class ItemController extends AbstractController {
         item.setCreator("soo");
         item.setCreateDate(nowDate);
         item.setUpdateDate(nowDate);
+        item.setStatus(true);
         itemService.addItem(item);
 
         rsp = new APIResponse(true, "add Board success", item);
@@ -65,9 +66,38 @@ public class ItemController extends AbstractController {
         Date date = new Date();
         String nowDate = format.format(date);
 
-        itemService.deleteItem(itemKey);
+        Item item = itemService.getItem(itemKey);
+        logger.debug("{}", item);
+
+        item.setUpdateDate(nowDate);
+        item.setStatus(false);
+
+        // item 삭제
+        // itemService.deleteItem(itemKey);
+
+        // item status 변경
+        itemService.updateItem(item);
 
         rsp = new APIResponse(true, "delete Board success", null);
+        return ResponseEntity.ok(rsp);
+    }
+
+    @PutMapping("/item")
+    public ResponseEntity<APIResponse> updateItem(@RequestBody Item itemParam) {
+        APIResponse rsp = null;
+
+        logger.debug("@@@ param - {}", itemParam);
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String nowDate = format.format(date);
+
+        Item item = itemService.getItem(itemParam.getItemKey());
+        item.setContent(itemParam.getContent());
+        item.setUpdateDate(nowDate);
+        itemService.updateItem(item);
+
+        rsp = new APIResponse(true, "update Board success", item);
         return ResponseEntity.ok(rsp);
     }
 }

@@ -26,8 +26,9 @@ public class Item implements Serializable {
 
     private String creator;
 
-    @Column
     private String createDate;
 
     private String updateDate;
+
+    private boolean status;
 }
