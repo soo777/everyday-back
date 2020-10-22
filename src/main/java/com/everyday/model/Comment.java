@@ -6,20 +6,19 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @ToString
 @Getter
 @Entity
-@Table(name = "item")
-public class Item implements Serializable {
+@Table(name = "comment")
+public class Comment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(insertable = false, updatable = false)
-    private int itemKey;
+    private int commentKey;
 
-    private int boardKey;
+    private int itemKey;
 
     private String content;
 
@@ -33,7 +32,4 @@ public class Item implements Serializable {
 
     private boolean status;
 
-    @OneToMany
-    @JoinColumn(name = "itemKey", insertable =  false, updatable = false)
-    private List<Comment> comment;
 }
