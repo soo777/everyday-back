@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @ToString
@@ -24,5 +25,5 @@ public class User implements Serializable {
 
     private String name;
 
-    private String createDate;
+    private LocalDateTime createDate = LocalDateTime.now() ;
 }

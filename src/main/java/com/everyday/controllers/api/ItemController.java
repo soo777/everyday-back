@@ -2,7 +2,6 @@ package com.everyday.controllers.api;
 
 import com.everyday.controller.AbstractController;
 import com.everyday.messages.APIResponse;
-import com.everyday.model.Board;
 import com.everyday.model.Item;
 import com.everyday.services.ItemService;
 import org.slf4j.Logger;
@@ -11,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -39,16 +36,10 @@ public class ItemController extends AbstractController {
 
         logger.debug("@@@ param - {}", itemParam);
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date();
-        String nowDate = format.format(date);
-
         Item item = new Item();
         item.setBoardKey(itemParam.getBoardKey());
         item.setContent(itemParam.getContent());
         item.setCreator("soo");
-        item.setCreateDate(nowDate);
-        item.setUpdateDate(nowDate);
         item.setStatus(true);
         itemService.addItem(item);
 
@@ -62,14 +53,9 @@ public class ItemController extends AbstractController {
 
         logger.debug("@@@ param - {}", itemKey);
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date();
-        String nowDate = format.format(date);
-
         Item item = itemService.getItem(itemKey);
         logger.debug("{}", item);
 
-        item.setUpdateDate(nowDate);
         item.setStatus(false);
 
         // item 삭제
@@ -88,13 +74,8 @@ public class ItemController extends AbstractController {
 
         logger.debug("@@@ param - {}", itemParam);
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date();
-        String nowDate = format.format(date);
-
         Item item = itemService.getItem(itemParam.getItemKey());
         item.setContent(itemParam.getContent());
-        item.setUpdateDate(nowDate);
         itemService.updateItem(item);
 
         rsp = new APIResponse(true, "update Board success", item);

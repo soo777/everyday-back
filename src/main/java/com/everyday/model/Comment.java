@@ -1,11 +1,15 @@
 package com.everyday.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @ToString
@@ -26,10 +30,10 @@ public class Comment implements Serializable {
 
     private String creator;
 
-    private String createDate;
+    private LocalDateTime createDate = LocalDateTime.now();
 
-    private String updateDate;
+    private LocalDateTime updateDate = LocalDateTime.now();;
 
-    private boolean status;
+    private boolean status = true;
 
 }

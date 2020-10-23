@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -27,11 +28,11 @@ public class Item implements Serializable {
 
     private String creator;
 
-    private String createDate;
+    private LocalDateTime createDate = LocalDateTime.now();;
 
-    private String updateDate;
+    private LocalDateTime updateDate = LocalDateTime.now();;
 
-    private boolean status;
+    private boolean status = true;
 
     @OneToMany
     @JoinColumn(name = "itemKey", insertable =  false, updatable = false)
