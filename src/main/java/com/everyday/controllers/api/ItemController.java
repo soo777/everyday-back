@@ -3,11 +3,16 @@ package com.everyday.controllers.api;
 import com.everyday.controller.AbstractController;
 import com.everyday.messages.APIResponse;
 import com.everyday.model.Item;
+import com.everyday.model.User;
 import com.everyday.services.ItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +26,18 @@ public class ItemController extends AbstractController {
     private ItemService itemService;
 
     @GetMapping("/item")
-    public ResponseEntity<APIResponse> getItemList(@RequestParam int boardKey) {
+    public ResponseEntity<APIResponse> getItemList(Authentication auth, @RequestParam int boardKey) {
         APIResponse rsp = null;
+
+        logger.debug("auth1 - {}", auth);
+        logger.debug("auth2 - {}", auth.getPrincipal().getClass());
+        logger.debug("auth3 - {}", ((UserDetails)auth.getPrincipal()).getUsername());
+
+        Object principal = auth.getPrincipal();
+
+        String username = ((UserDetails)principal).getUsername();
+        logger.debug("username - {}", username);
+        logger.debug("password - {}", ((UserDetails)principal).getPassword());
 
         List<Item> itemList = itemService.getItemList(boardKey);
 
