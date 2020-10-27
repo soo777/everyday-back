@@ -53,7 +53,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // For CORS error
         httpSecurity.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         httpSecurity.csrf().disable()
-                .authorizeRequests().antMatchers("/authenticate", "/signIn", "/item", "/comment").permitAll()
+                .authorizeRequests()
+                .antMatchers("/api/v1/authenticate", "/api/v1/signIn", "/api/v1/item", "/api/v1/comment").permitAll()
+                .antMatchers("/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs").permitAll()    // swagger
                 .anyRequest().authenticated().and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

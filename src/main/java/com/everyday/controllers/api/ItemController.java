@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1")
 public class ItemController extends AbstractController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
