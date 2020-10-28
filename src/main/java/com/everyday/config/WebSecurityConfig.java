@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         httpSecurity.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/authenticate", "/api/v1/signIn", "/api/v1/item", "/api/v1/comment").permitAll()
+                .antMatchers("/api/v1/authenticate", "/api/v1/signIn").permitAll()
                 .antMatchers("/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs").permitAll()    // swagger
                 .anyRequest().authenticated().and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
