@@ -14,7 +14,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 
 @RestController
@@ -95,6 +97,28 @@ public class ItemController extends AbstractController {
         itemService.updateItem(item);
 
         rsp = new APIResponse(true, "update Board success", item);
+        return ResponseEntity.ok(rsp);
+    }
+
+    @PostMapping("/item/file")
+    public ResponseEntity<APIResponse> uploadFile(@RequestParam int boardKey, @RequestParam String content, @RequestParam MultipartFile files) {
+        APIResponse rsp = null;
+
+        logger.debug("@@@ boardKey - {}", boardKey);
+        logger.debug("@@@ content - {}", content);
+        logger.debug("@@@ param - {}", files);
+        logger.debug("@@@ param - {}", files.getOriginalFilename());
+
+        String baseDir = "abc";
+        String filePath = baseDir + "\\" + files.getOriginalFilename();
+        files.transferTo(new File(filePath));
+
+
+//        Item item = itemService.getItem(itemParam.getItemKey());
+//        item.setContent(itemParam.getContent());
+//        itemService.updateItem(item);
+
+//        rsp = new APIResponse(true, "update Board success", item);
         return ResponseEntity.ok(rsp);
     }
 }
