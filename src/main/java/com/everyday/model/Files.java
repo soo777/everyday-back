@@ -13,8 +13,8 @@ import java.util.List;
 @ToString
 @Getter
 @Entity
-@Table(name = "file")
-public class File implements Serializable {
+@Table(name = "files")
+public class Files implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(insertable = false, updatable = false)
