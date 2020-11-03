@@ -2,22 +2,25 @@ package com.everyday.controllers.api;
 
 import com.everyday.controller.AbstractController;
 import com.everyday.messages.APIResponse;
+import com.everyday.model.Files;
 import com.everyday.model.Item;
-import com.everyday.model.User;
+import com.everyday.services.FilesService;
 import com.everyday.services.ItemService;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -27,6 +30,12 @@ public class ItemController extends AbstractController {
 
     @Autowired
     private ItemService itemService;
+
+    @Autowired
+    private FilesService filesService;
+
+    @Value("${filePathUrl}")
+    private String filePathUrl;
 
     @GetMapping("/item")
     public ResponseEntity<APIResponse> getItemList(Authentication auth, @RequestParam int boardKey) {
@@ -101,24 +110,41 @@ public class ItemController extends AbstractController {
     }
 
     @PostMapping("/item/file")
-    public ResponseEntity<APIResponse> uploadFile(@RequestParam int boardKey, @RequestParam String content, @RequestParam MultipartFile files) {
+    public ResponseEntity<APIResponse> uploadFile(@RequestParam int boardKey, @RequestParam String content, @RequestParam MultipartFile file) throws IOException {
         APIResponse rsp = null;
 
         logger.debug("@@@ boardKey - {}", boardKey);
         logger.debug("@@@ content - {}", content);
-        logger.debug("@@@ param - {}", files);
-        logger.debug("@@@ param - {}", files.getOriginalFilename());
+        logger.debug("@@@ param - {}", file);
+        logger.debug("@@@ param - {}", file.getOriginalFilename());
 
-        String baseDir = "abc";
-        String filePath = baseDir + "\\" + files.getOriginalFilename();
-        files.transferTo(new File(filePath));
+        // local에 file 저장
+        // uuid 로 저장하도록
+        String fileName = file.getOriginalFilename();
+        String FileNameExt = FilenameUtils.getExtension(fileName).toLowerCase();
 
+        String destFileName = UUID.randomUUID().toString().replace("-", "") + "." + FileNameExt;
+        logger.debug("@@@ fileName - {}", destFileName);
+        File destFile = new File(filePathUrl + destFileName);
+        file.transferTo(destFile);
 
-//        Item item = itemService.getItem(itemParam.getItemKey());
-//        item.setContent(itemParam.getContent());
-//        itemService.updateItem(item);
+        // item에 저장
+        Item item = new Item();
+        item.setBoardKey(boardKey);
+        item.setContent(content);
+        item.setCreator("soo");
+        item.setStatus(true);
+        item = itemService.addItem(item);
 
-//        rsp = new APIResponse(true, "update Board success", item);
+        logger.debug("item - {}", item);
+
+        // 파일 path db 저장
+        Files saveFile = new Files();
+        saveFile.setItemKey(item.getItemKey());
+        saveFile.setPath(filePathUrl + destFileName);
+        filesService.addFile(saveFile);
+
+        rsp = new APIResponse(true, "update Board success", item);
         return ResponseEntity.ok(rsp);
     }
 }

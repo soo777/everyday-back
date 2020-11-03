@@ -16,8 +16,8 @@ public class ItemService {
         return itemRepository.findAllByBoardKeyAndStatus(boardKey, true);
     }
 
-    public void addItem(Item item) {
-        itemRepository.save(item);
+    public Item addItem(Item item) {
+        return itemRepository.save(item);
     }
 
     public void deleteItem(Integer itemKey) {

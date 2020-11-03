@@ -37,4 +37,8 @@ public class Item implements Serializable {
     @OneToMany
     @JoinColumn(name = "itemKey", insertable =  false, updatable = false)
     private List<Comment> comment;
+
+    @OneToMany
+    @JoinColumn(name = "itemKey", insertable =  false, updatable = false)
+    private List<Files> files;
 }
