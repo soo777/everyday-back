@@ -7,6 +7,7 @@ import com.everyday.model.Item;
 import com.everyday.services.FilesService;
 import com.everyday.services.ItemService;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
+import java.io.*;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -147,4 +146,46 @@ public class ItemController extends AbstractController {
         rsp = new APIResponse(true, "update Board success", item);
         return ResponseEntity.ok(rsp);
     }
+
+
+    @GetMapping("/item/file")
+    public ResponseEntity<APIResponse> getFileImage(@RequestParam String filePath) throws IOException {
+        APIResponse rsp = null;
+
+        String fileExtName = filePath.substring(filePath.lastIndexOf(".") + 1);
+
+        logger.debug("filePath - {} ", filePath);
+        logger.debug("fileExtName - {} ", fileExtName);
+
+        FileInputStream inputStream = null;
+        ByteArrayOutputStream byteOutStream = null;
+
+        File file = new File(filePath);
+
+        Map map = new HashMap();
+
+        if(file.exists()) {
+            inputStream = new FileInputStream(file);
+            byteOutStream = new ByteArrayOutputStream();
+
+            int len = 0;
+            byte[] buf = new byte[1024];
+            while((len = inputStream.read(buf)) != -1) {
+                byteOutStream.write(buf, 0, len);
+            }
+
+            byte[] fileArray = byteOutStream.toByteArray();
+            String imageString = new String(Base64.encodeBase64(fileArray));
+
+            logger.debug("imageString - {} ", imageString);
+
+            String img = "data:image/" + fileExtName +";base64, " + imageString;
+
+            map.put("img", img);
+        }
+
+        rsp = new APIResponse(true, "success", map);
+        return ResponseEntity.ok(rsp);
+    }
+
 }
