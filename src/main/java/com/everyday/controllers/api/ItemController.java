@@ -42,13 +42,13 @@ public class ItemController extends AbstractController {
 
         logger.debug("auth1 - {}", auth);
         logger.debug("auth2 - {}", auth.getPrincipal().getClass());
-        logger.debug("auth3 - {}", ((UserDetails)auth.getPrincipal()).getUsername());
+        logger.debug("auth3 - {}", ((UserDetails) auth.getPrincipal()).getUsername());
 
         Object principal = auth.getPrincipal();
 
-        String username = ((UserDetails)principal).getUsername();
+        String username = ((UserDetails) principal).getUsername();
         logger.debug("username - {}", username);
-        logger.debug("password - {}", ((UserDetails)principal).getPassword());
+        logger.debug("password - {}", ((UserDetails) principal).getPassword());
 
         List<Item> itemList = itemService.getItemList(boardKey);
 
@@ -149,40 +149,82 @@ public class ItemController extends AbstractController {
 
 
     @GetMapping("/item/file")
-    public ResponseEntity<APIResponse> getFileImage(@RequestParam String filePath) throws IOException {
+    public ResponseEntity<APIResponse> getFileImage(@RequestParam String[] filePath) throws IOException {
         APIResponse rsp = null;
 
-        String fileExtName = filePath.substring(filePath.lastIndexOf(".") + 1);
-
         logger.debug("filePath - {} ", filePath);
-        logger.debug("fileExtName - {} ", fileExtName);
-
-        FileInputStream inputStream = null;
-        ByteArrayOutputStream byteOutStream = null;
-
-        File file = new File(filePath);
 
         Map map = new HashMap();
+        List list = new ArrayList();
 
-        if(file.exists()) {
-            inputStream = new FileInputStream(file);
-            byteOutStream = new ByteArrayOutputStream();
+        for (int i = 0; i < filePath.length; i++) {
+            logger.debug("filePath123 - {} ", filePath[i]);
 
-            int len = 0;
-            byte[] buf = new byte[1024];
-            while((len = inputStream.read(buf)) != -1) {
-                byteOutStream.write(buf, 0, len);
+            String fileExtName = filePath[i].substring(filePath[i].lastIndexOf(".") + 1);
+
+            logger.debug("filePath - {} ", filePath);
+            logger.debug("fileExtName - {} ", fileExtName);
+
+            FileInputStream inputStream = null;
+            ByteArrayOutputStream byteOutStream = null;
+
+            File file = new File(filePath[i]);
+
+            if (file.exists()) {
+                inputStream = new FileInputStream(file);
+                byteOutStream = new ByteArrayOutputStream();
+
+                int len = 0;
+                byte[] buf = new byte[1024];
+                while ((len = inputStream.read(buf)) != -1) {
+                    byteOutStream.write(buf, 0, len);
+                }
+
+                byte[] fileArray = byteOutStream.toByteArray();
+                String imageString = new String(Base64.encodeBase64(fileArray));
+
+                logger.debug("imageString - {} ", imageString);
+
+                String img = "data:image/" + fileExtName + ";base64, " + imageString;
+
+                list.add(img);
             }
-
-            byte[] fileArray = byteOutStream.toByteArray();
-            String imageString = new String(Base64.encodeBase64(fileArray));
-
-            logger.debug("imageString - {} ", imageString);
-
-            String img = "data:image/" + fileExtName +";base64, " + imageString;
-
-            map.put("img", img);
         }
+        map.put("img", list);
+
+//        String fileExtName = filePath.substring(filePath.lastIndexOf(".") + 1);
+//
+//        logger.debug("filePath - {} ", filePath);
+//        logger.debug("fileExtName - {} ", fileExtName);
+//
+//        FileInputStream inputStream = null;
+//        ByteArrayOutputStream byteOutStream = null;
+//
+//        File file = new File(filePath);
+//
+//        Map map = new HashMap();
+//
+//        if(file.exists()) {
+//            inputStream = new FileInputStream(file);
+//            byteOutStream = new ByteArrayOutputStream();
+//
+//            int len = 0;
+//            byte[] buf = new byte[1024];
+//            while((len = inputStream.read(buf)) != -1) {
+//                byteOutStream.write(buf, 0, len);
+//            }
+//
+//            byte[] fileArray = byteOutStream.toByteArray();
+//            String imageString = new String(Base64.encodeBase64(fileArray));
+//
+//            logger.debug("imageString - {} ", imageString);
+//
+//            String img = "data:image/" + fileExtName +";base64, " + imageString;
+//
+//            map.put("img", img);
+//        }
+
+//        rsp = new APIResponse(true, "success", map);
 
         rsp = new APIResponse(true, "success", map);
         return ResponseEntity.ok(rsp);
