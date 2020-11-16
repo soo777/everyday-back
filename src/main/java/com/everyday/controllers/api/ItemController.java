@@ -108,24 +108,22 @@ public class ItemController extends AbstractController {
         return ResponseEntity.ok(rsp);
     }
 
+    /**
+     * 게시글 업로드
+     * @param boardKey
+     * @param content
+     * @param file
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/item/file")
-    public ResponseEntity<APIResponse> uploadFile(@RequestParam int boardKey, @RequestParam String content, @RequestParam MultipartFile file) throws IOException {
+    public ResponseEntity<APIResponse> uploadFile(@RequestParam int boardKey, @RequestParam String content, @RequestParam MultipartFile[] file) throws IOException {
         APIResponse rsp = null;
 
         logger.debug("@@@ boardKey - {}", boardKey);
         logger.debug("@@@ content - {}", content);
         logger.debug("@@@ param - {}", file);
-        logger.debug("@@@ param - {}", file.getOriginalFilename());
-
-        // local에 file 저장
-        // uuid 로 저장하도록
-        String fileName = file.getOriginalFilename();
-        String FileNameExt = FilenameUtils.getExtension(fileName).toLowerCase();
-
-        String destFileName = UUID.randomUUID().toString().replace("-", "") + "." + FileNameExt;
-        logger.debug("@@@ fileName - {}", destFileName);
-        File destFile = new File(filePathUrl + destFileName);
-        file.transferTo(destFile);
+        logger.debug("@@@ file length - {}", file.length);
 
         // item에 저장
         Item item = new Item();
@@ -137,17 +135,66 @@ public class ItemController extends AbstractController {
 
         logger.debug("item - {}", item);
 
-        // 파일 path db 저장
-        Files saveFile = new Files();
-        saveFile.setItemKey(item.getItemKey());
-        saveFile.setPath(filePathUrl + destFileName);
-        filesService.addFile(saveFile);
+        String fileName = "";
+        String fileNameExt = "";
+        String destFileName = "";
+
+        for(int i=0; i<file.length; i++){
+            logger.debug("@@@ file ori name - {}", file[i].getOriginalFilename());
+
+            fileName = file[i].getOriginalFilename();
+            fileNameExt = FilenameUtils.getExtension(fileName).toLowerCase();
+
+            destFileName = UUID.randomUUID().toString().replace("-", "") + "." + fileNameExt;
+            logger.debug("@@@ fileName - {}", destFileName);
+
+            File destFile = new File(filePathUrl + destFileName);
+            file[i].transferTo(destFile);
+
+            // 파일 path db 저장
+            Files saveFile = new Files();
+            saveFile.setItemKey(item.getItemKey());
+            saveFile.setPath(filePathUrl + destFileName);
+            filesService.addFile(saveFile);
+        }
+
+//        // local에 file 저장
+//        // uuid 로 저장하도록
+//        String fileName = file.getOriginalFilename();
+//        String fileNameExt = FilenameUtils.getExtension(fileName).toLowerCase();
+//
+//        String destFileName = UUID.randomUUID().toString().replace("-", "") + "." + fileNameExt;
+//        logger.debug("@@@ fileName - {}", destFileName);
+//        File destFile = new File(filePathUrl + destFileName);
+//        file.transferTo(destFile);
+//
+//        // item에 저장
+//        Item item = new Item();
+//        item.setBoardKey(boardKey);
+//        item.setContent(content);
+//        item.setCreator("soo");
+//        item.setStatus(true);
+//        item = itemService.addItem(item);
+//
+//        logger.debug("item - {}", item);
+//
+//        // 파일 path db 저장
+//        Files saveFile = new Files();
+//        saveFile.setItemKey(item.getItemKey());
+//        saveFile.setPath(filePathUrl + destFileName);
+//        filesService.addFile(saveFile);
 
         rsp = new APIResponse(true, "update Board success", item);
         return ResponseEntity.ok(rsp);
     }
 
 
+    /**
+     * 업로드된 파일 이미지 로드
+     * @param filePath
+     * @return
+     * @throws IOException
+     */
     @GetMapping("/item/file")
     public ResponseEntity<APIResponse> getFileImage(@RequestParam String[] filePath) throws IOException {
         APIResponse rsp = null;
