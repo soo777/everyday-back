@@ -8,7 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -26,6 +31,32 @@ public class UserController extends AbstractController {
         User user = userService.getUser(userParam.getUserId());
 
         rsp = new APIResponse(true, "success", user);
+        return ResponseEntity.ok(rsp);
+    }
+
+    @GetMapping("/userDetail")
+    public ResponseEntity<APIResponse> getUserDetail(Authentication auth, @RequestParam String userId) {
+        APIResponse rsp = null;
+
+        String userName = ((UserDetails) auth.getPrincipal()).getUsername();
+
+        logger.debug("userName - {}", userName);
+
+        User user;
+
+        if(userName.equals(userId)) {
+            user = userService.getUser(userId);
+        } else {
+            rsp = new APIResponse(false, "you don't have permission", null);
+            return ResponseEntity.ok(rsp);
+        }
+
+        Map map = new HashMap<>();
+        map.put("userId", user.getUserId());
+        map.put("name", user.getName());
+        map.put("created", user.getCreateDate());
+
+        rsp = new APIResponse(true, "success", map);
         return ResponseEntity.ok(rsp);
     }
 }
