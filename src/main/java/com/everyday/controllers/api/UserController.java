@@ -34,7 +34,7 @@ public class UserController extends AbstractController {
         return ResponseEntity.ok(rsp);
     }
 
-    @GetMapping("/userDetail")
+    @GetMapping("/user/userDetail")
     public ResponseEntity<APIResponse> getUserDetail(Authentication auth, @RequestParam String userId) {
         APIResponse rsp = null;
 

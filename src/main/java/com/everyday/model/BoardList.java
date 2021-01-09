@@ -11,16 +11,16 @@ import java.io.Serializable;
 @ToString
 @Getter
 @Entity
-@Table(name = "board")
-public class Board implements Serializable {
+@Table(name = "boardList")
+public class BoardList implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(insertable = false, updatable = false)
+    private int index;
+
     private int boardKey;
 
-    private String boardName;
+    private int userKey;
 
-    private String creator;
-
-    private String host;
+    private String userId;
 }
