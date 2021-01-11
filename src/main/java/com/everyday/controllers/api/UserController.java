@@ -2,6 +2,7 @@ package com.everyday.controllers.api;
 
 import com.everyday.controller.AbstractController;
 import com.everyday.messages.APIResponse;
+import com.everyday.model.BoardList;
 import com.everyday.model.User;
 import com.everyday.services.UserService;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -57,6 +59,16 @@ public class UserController extends AbstractController {
         map.put("created", user.getCreateDate());
 
         rsp = new APIResponse(true, "success", map);
+        return ResponseEntity.ok(rsp);
+    }
+
+    @GetMapping("/user/board/memberList")
+    public ResponseEntity<APIResponse> getMemberList(Authentication auth, @RequestParam int boardKey) {
+        APIResponse rsp = null;
+
+        List<BoardList> memberList = userService.getMemberList(boardKey);
+
+        rsp = new APIResponse(true, "success", memberList);
         return ResponseEntity.ok(rsp);
     }
 }
