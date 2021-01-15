@@ -28,4 +28,8 @@ public class UserService {
     public List<BoardList> getMemberList(int boardKey) {
         return boardListRepository.findByBoardKey(boardKey);
     }
+
+    public List<User> getMemberListById(String userId) {
+        return userRepository.findByUserIdContaining(userId);
+    }
 }

@@ -71,4 +71,14 @@ public class UserController extends AbstractController {
         rsp = new APIResponse(true, "success", memberList);
         return ResponseEntity.ok(rsp);
     }
+
+    @GetMapping("/user/list")
+    public ResponseEntity<APIResponse> getMemberListById(Authentication auth, @RequestParam String userId) {
+        APIResponse rsp = null;
+
+        List<User> memberList = userService.getMemberListById(userId);
+
+        rsp = new APIResponse(true, "success", memberList);
+        return ResponseEntity.ok(rsp);
+    }
 }
