@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class UserController extends AbstractController {
 
         User user;
 
-        if(userName.equals(userId)) {
+        if (userName.equals(userId)) {
             user = userService.getUser(userId);
         } else {
             rsp = new APIResponse(false, "you don't have permission", null);
@@ -69,6 +70,31 @@ public class UserController extends AbstractController {
         List<BoardList> memberList = userService.getMemberList(boardKey);
 
         rsp = new APIResponse(true, "success", memberList);
+        return ResponseEntity.ok(rsp);
+    }
+
+    @PostMapping("/user/board/memberList")
+    public ResponseEntity<APIResponse> addMemberList(Authentication auth, @RequestParam int boardKey, @RequestParam List<String> memberList) {
+        APIResponse rsp = null;
+
+        User user;
+
+        for (int i = 0; i < memberList.size(); i++) {
+            user = userService.getUser(memberList.get(i));
+            logger.debug("user : {}",user);
+
+            BoardList board = new BoardList();
+
+            board.setBoardKey(boardKey);
+            board.setUserKey(user.getUserKey());
+            board.setUserId(user.getUserId());
+
+            userService.addBoardMember(board);
+        }
+
+        List<BoardList> boardList = userService.getMemberList(boardKey);
+
+        rsp = new APIResponse(true, "success", boardList);
         return ResponseEntity.ok(rsp);
     }
 

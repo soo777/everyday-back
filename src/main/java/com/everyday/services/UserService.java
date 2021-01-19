@@ -32,4 +32,8 @@ public class UserService {
     public List<User> getMemberListById(String userId) {
         return userRepository.findByUserIdContaining(userId);
     }
+
+    public void addBoardMember(BoardList boardList) {
+        boardListRepository.save(boardList);
+    }
 }
