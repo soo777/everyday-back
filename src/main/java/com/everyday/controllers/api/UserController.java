@@ -81,7 +81,6 @@ public class UserController extends AbstractController {
 
         for (int i = 0; i < memberList.size(); i++) {
             user = userService.getUser(memberList.get(i));
-            logger.debug("user : {}",user);
 
             BoardList board = new BoardList();
 
@@ -95,6 +94,23 @@ public class UserController extends AbstractController {
         List<BoardList> boardList = userService.getMemberList(boardKey);
 
         rsp = new APIResponse(true, "success", boardList);
+        return ResponseEntity.ok(rsp);
+    }
+
+    @GetMapping("/user/member/check")
+    public ResponseEntity<APIResponse> getMemberCheck(Authentication auth, @RequestParam int boardKey, @RequestParam String userId) {
+        APIResponse rsp = null;
+
+        List<BoardList> boardList = userService.getMemberList(boardKey);
+
+        for (int i = 0; i < boardList.size(); i++) {
+            if (boardList.get(i).getUserId().equals(userId)) {
+                rsp = new APIResponse(false, "success", null);
+                return ResponseEntity.ok(rsp);
+            }
+        }
+
+        rsp = new APIResponse(true, "success", null);
         return ResponseEntity.ok(rsp);
     }
 
