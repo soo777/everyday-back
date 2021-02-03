@@ -13,7 +13,7 @@ public class ItemService {
     private ItemRepository itemRepository;
 
     public List<Item> getItemList(Integer boardKey) {
-        return itemRepository.findAllByBoardKeyAndStatus(boardKey, true);
+        return itemRepository.findAllByBoardKeyAndStatusOrderByCreateDateDesc(boardKey, true);
     }
 
     public Item addItem(Item item) {

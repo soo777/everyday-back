@@ -12,7 +12,7 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Integer> {
     Item findById(int id);
 
-    List<Item> findAllByBoardKeyAndStatus(Integer boardKey, Boolean bool);
+    List<Item> findAllByBoardKeyAndStatusOrderByCreateDateDesc(Integer boardKey, Boolean bool);
 
     void deleteByItemKey(Integer itemKey);
 }
