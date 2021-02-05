@@ -3,11 +3,16 @@ package com.everyday.controllers.api;
 import com.everyday.controller.AbstractController;
 import com.everyday.messages.APIResponse;
 import com.everyday.model.Board;
+import com.everyday.model.BoardList;
+import com.everyday.model.User;
 import com.everyday.services.BoardService;
+import com.everyday.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +27,9 @@ public class BoardController extends AbstractController {
     @Autowired
     private BoardService boardService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/test")
     public ResponseEntity<APIResponse> hello() {
         APIResponse rsp = null;
@@ -33,25 +41,48 @@ public class BoardController extends AbstractController {
     }
 
     @GetMapping("/board")
-    public ResponseEntity<APIResponse> getBoardList() {
+    public ResponseEntity<APIResponse> getBoardList(Authentication auth) {
         APIResponse rsp = null;
 
-        List<Board> boardList = boardService.getBoardList();
+        String userName = ((UserDetails) auth.getPrincipal()).getUsername();
+
+        logger.debug("userName - {}", userName);
+
+//        List<Board> boardList = boardService.getBoardList();
+        List<Board> boardList = boardService.getBoardList(userName);
 
         rsp = new APIResponse(true, "success", boardList);
         return ResponseEntity.ok(rsp);
     }
 
     @PostMapping("/board")
-    public ResponseEntity<APIResponse> addBoardList(@RequestBody Board boardParam) {
+    public ResponseEntity<APIResponse> addBoardList(Authentication auth, @RequestBody Board boardParam) {
         APIResponse rsp = null;
 
         logger.debug("@@@ param - {}", boardParam);
 
+        String userName = ((UserDetails) auth.getPrincipal()).getUsername();
+
+        User user = userService.getUser(userName);
+        if(user == null) {
+            rsp = new APIResponse(false, "not found user", null);
+            return ResponseEntity.ok(rsp);
+        }
+
+        // board insert
         Board board = new Board();
         board.setBoardName(boardParam.getBoardName());
 
         boardService.addBoard(board);
+
+        // boardList insert
+        BoardList boardList = new BoardList();
+
+        boardList.setBoardKey(board.getBoardKey());
+        boardList.setUserKey(user.getUserKey());
+        boardList.setUserId(user.getUserId());
+
+        userService.addBoardMember(boardList);
 
         rsp = new APIResponse(true, "add Board success", board);
         return ResponseEntity.ok(rsp);
