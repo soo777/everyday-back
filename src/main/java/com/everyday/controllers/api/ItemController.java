@@ -117,7 +117,10 @@ public class ItemController extends AbstractController {
      * @throws IOException
      */
     @PostMapping("/item/file")
-    public ResponseEntity<APIResponse> uploadFile(@RequestParam int boardKey, @RequestParam String content, @RequestParam MultipartFile[] file) throws IOException {
+    public ResponseEntity<APIResponse> uploadFile(Authentication auth,
+                                                  @RequestParam int boardKey,
+                                                  @RequestParam String content,
+                                                  @RequestParam MultipartFile[] file) throws IOException {
         APIResponse rsp = null;
 
         logger.debug("@@@ boardKey - {}", boardKey);
@@ -125,11 +128,13 @@ public class ItemController extends AbstractController {
         logger.debug("@@@ param - {}", file);
         logger.debug("@@@ file length - {}", file.length);
 
+        String userId = ((UserDetails) auth.getPrincipal()).getUsername();
+
         // item에 저장
         Item item = new Item();
         item.setBoardKey(boardKey);
         item.setContent(content);
-        item.setCreator("soo");
+        item.setCreator(userId);
         item.setStatus(true);
         item = itemService.addItem(item);
 

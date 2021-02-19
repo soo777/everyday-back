@@ -2,8 +2,10 @@ package com.everyday.controllers.api;
 
 import com.everyday.controller.AbstractController;
 import com.everyday.messages.APIResponse;
+import com.everyday.model.Board;
 import com.everyday.model.BoardList;
 import com.everyday.model.User;
+import com.everyday.services.BoardService;
 import com.everyday.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,9 @@ public class UserController extends AbstractController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BoardService boardService;
 
     @GetMapping("/user")
     public ResponseEntity<APIResponse> getUser(@RequestBody User userParam) {
@@ -67,9 +72,14 @@ public class UserController extends AbstractController {
     public ResponseEntity<APIResponse> getMemberList(Authentication auth, @RequestParam int boardKey) {
         APIResponse rsp = null;
 
+        Board board = boardService.getBoard(boardKey);
         List<BoardList> memberList = userService.getMemberList(boardKey);
 
-        rsp = new APIResponse(true, "success", memberList);
+        Map map = new HashMap<>();
+        map.put("host", board.getHost());
+        map.put("memberList", memberList);
+
+        rsp = new APIResponse(true, "success", map);
         return ResponseEntity.ok(rsp);
     }
 

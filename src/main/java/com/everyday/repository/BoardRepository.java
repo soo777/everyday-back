@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 @Transactional
 public interface BoardRepository extends JpaRepository<Board, Integer> {
-    Board findById(int id);
+    Board findByBoardKey(int boardKey);
 
     @Query(value = "select a.boardKey, a.boardName, a.creator, a.host " +
             "from Board a join BoardList b " +

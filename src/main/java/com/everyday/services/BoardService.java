@@ -29,7 +29,7 @@ public class BoardService {
         boardRepository.save(board);
     }
 
-    public Board getBoardList1() {
-        return boardRepository.findById(1);
+    public Board getBoard(int boardKey) {
+        return boardRepository.findByBoardKey(boardKey);
     }
 }
