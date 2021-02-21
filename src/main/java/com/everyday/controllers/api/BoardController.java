@@ -72,6 +72,8 @@ public class BoardController extends AbstractController {
         // board insert
         Board board = new Board();
         board.setBoardName(boardParam.getBoardName());
+        board.setCreator(user.getUserId());
+        board.setHost(user.getUserId());
 
         boardService.addBoard(board);
 
