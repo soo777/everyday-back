@@ -14,8 +14,8 @@ public interface BoardRepository extends JpaRepository<Board, Integer> {
     Board findByBoardKey(int boardKey);
 
     @Query(value = "select a.boardKey, a.boardName, a.creator, a.host " +
-            "from Board a join BoardList b " +
+            "from board a join boardList b " +
             "on a.boardKey = b.boardKey " +
-            "where b.userId = ?1", nativeQuery = true)
+            "where b.userId = ?", nativeQuery = true)
     List<Board> findByUserId(String userId);
 }
