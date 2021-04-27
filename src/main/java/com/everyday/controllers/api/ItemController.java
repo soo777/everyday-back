@@ -235,7 +235,7 @@ public class ItemController extends AbstractController {
                 byte[] fileArray = byteOutStream.toByteArray();
                 String imageString = new String(Base64.encodeBase64(fileArray));
 
-                logger.debug("imageString - {} ", imageString);
+//                logger.debug("imageString - {} ", imageString);
 
                 String img = "data:image/" + fileExtName + ";base64, " + imageString;
 
