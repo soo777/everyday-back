@@ -57,15 +57,17 @@ public class ItemController extends AbstractController {
     }
 
     @PostMapping("/item")
-    public ResponseEntity<APIResponse> addItem(@RequestBody Item itemParam) {
+    public ResponseEntity<APIResponse> addItem(Authentication auth, @RequestBody Item itemParam) {
         APIResponse rsp = null;
+
+        String userId = ((UserDetails) auth.getPrincipal()).getUsername();
 
         logger.debug("@@@ param - {}", itemParam);
 
         Item item = new Item();
         item.setBoardKey(itemParam.getBoardKey());
         item.setContent(itemParam.getContent());
-        item.setCreator("soo");
+        item.setCreator(userId);
         item.setStatus(true);
         itemService.addItem(item);
 

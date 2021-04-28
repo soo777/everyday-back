@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,19 +34,21 @@ public class CommentController extends AbstractController {
     }
 
     @PostMapping("/comment")
-    public ResponseEntity<APIResponse> addComment(@RequestBody Comment commentParam) {
+    public ResponseEntity<APIResponse> addComment(Authentication auth, @RequestBody Comment commentParam) {
         APIResponse rsp = null;
+
+        String userId = ((UserDetails) auth.getPrincipal()).getUsername();
 
         logger.debug("{}",commentParam);
 
         Comment comment = new Comment();
         comment.setItemKey(commentParam.getItemKey());
         comment.setContent(commentParam.getContent());
-        comment.setCreator(commentParam.getCreator());
+        comment.setCreator(userId);
 
         commentService.addComment(comment);
 
-        rsp = new APIResponse(true, "success", commentParam);
+        rsp = new APIResponse(true, "success", comment);
         return ResponseEntity.ok(rsp);
     }
 
